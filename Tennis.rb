@@ -1,12 +1,12 @@
 class Tennis
 
   def initialize
-    @called_score = false
+    #@called_score = false
     @score = [[0,0]]
   end
   
   def get_current_game_score
-    
+    @score
 
     #score_point
     
@@ -24,7 +24,11 @@ class Tennis
   end
 
   def score_point(player )# = "bob")
-    @called_score = true
+    #@called_score = true
+
+    @score << @score[-1] + [15,0]
+    2.times{@score[-1].shift}
+    @score
     
 
     # if player == "Bob" && @score.length == 1
