@@ -26,8 +26,7 @@ class Tennis
   def score_point(player )# = "bob")
     #@called_score = true
 
-    @score << @score[-1] + [15,0]
-    2.times{@score[-1].shift}
+    @score << [15,0]
     @score
     
 
