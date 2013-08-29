@@ -1,6 +1,7 @@
 class Tennis
 
-  def initialize
+  def initialize(output = STDOUT)
+    @output = output
     @score = [[0,0]]
     @winning_player = ''
   end
@@ -14,46 +15,40 @@ class Tennis
   end
 
   def score_point(player)
-    if @score[-1] == 'deuce' && player == 'player1'
-      @score << ['advantage/-']
-      return @score
-    elsif @score[-1] == 'deuce' && player == 'player2'
-      @score << ['-/advantage']
-      return @score
-    end
-
-    if player == 'player1'
-      new_score = @score[-1][0] + 15 
-      other_score = @score[-1][1]
-      if new_score == 45
-        new_score = 40
-      elsif new_score == 55
-        winner('player1')
-      end
-      @score << [new_score,other_score]
-    else
-      new_score = @score[-1][1] + 15 
-      other_score = @score[-1][0]
-      if new_score == 45
-        new_score = 40
-      elsif new_score == 55
-        winner('player2')
-      end
-      if new_score == 40 && other_score == 40
-        @score << ['deuce']
-      else 
-        @score << [other_score,new_score]
-      end
-    end
+    update_score(player)
+    @output.print(deuce? ? 'deuce' : @score.last)
+    winner(@winner) if @winner
+    @score
   end
 
   def winner(player)
-    print "#{player} is the winner"
+    @output.print "#{player} is the winner"
     @winning_player = player
   end
 
   def winning_player
     @winning_player
+  end
+
+  def deuce?
+    @score.last == [40,40]
+  end
+
+  def update_score(player)
+    scoring_player = player == 'player1' ? 0 : 1
+    other_player = player == 'player1' ? 1 : 0
+
+    new_score = @score.last[scoring_player] + 15 
+    other_score = @score.last[other_player]
+    if new_score == 45
+      new_score = 40
+    elsif new_score == 55 && !deuce?
+      @winner = player
+    end
+      @new_scores = []
+      @new_scores[scoring_player] = new_score
+      @new_scores[other_player] = other_score
+      @score << @new_scores
   end
 
 end

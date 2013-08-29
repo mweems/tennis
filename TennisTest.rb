@@ -52,16 +52,25 @@ class TennisTest < Test::Unit::TestCase
     assert_equal("player1", game.winning_player)
   end
 
-  def test_both_players_scoring_40_results_in_duece
-    game = Tennis.new
+  def test_winning_results_in_printing_out_winner_message
+    fake = FakeOut.new
+    game = Tennis.new(fake)
     game.score_point('player1')
     game.score_point('player1')
     game.score_point('player1')
-    game.score_point('player2')
-    game.score_point('player2')
-    game.score_point('player2')
-    assert_equal([[0,0],[15,0],[30,0],[40,0],[40,15],[40,30],['deuce']], game.get_current_game_score)
+    game.score_point('player1')
+    assert_equal("player1 is the winner", fake.printed.last)
   end
+
+  def test_score_prints_everytime_a_player_scores
+    fake = FakeOut.new
+    game = Tennis.new(fake)
+    game.score_point('player1')
+    game.score_point('player1')
+    assert_equal([15,0], fake.printed[0])
+    assert_equal([30,0], fake.printed[1])
+  end
+
 
   def test_player_doesnt_win_on_first_score_after_deuce
      game = Tennis.new
@@ -73,5 +82,28 @@ class TennisTest < Test::Unit::TestCase
     game.score_point('player2')
     game.score_point('player1')
     assert_equal('', game.winning_player)
+  end
+
+  def test_prints_deuce_when_players_reach_deuce
+    fake = FakeOut.new
+    game = Tennis.new(fake)
+    game.score_point('player1')
+    game.score_point('player1')
+    game.score_point('player1')
+    game.score_point('player2')
+    game.score_point('player2')
+    game.score_point('player2')
+
+    assert_equal('deuce', fake.printed.last)
+  end
+end
+
+class FakeOut
+  def print(str)
+    @printed ||= []
+    @printed << str
+  end
+  def printed
+    @printed
   end
 end
