@@ -1,47 +1,59 @@
 class Tennis
 
   def initialize
-    #@called_score = false
     @score = [[0,0]]
+    @winning_player = ''
   end
   
   def get_current_game_score
     @score
-
-    #score_point
-    
-    # @count += 1
-    # if @count == 1
-    #   puts "----------#{@count}-------"
-    #   @score = [[0,0]]
-    # else
-    #   @score = [[0,0],[15,0]]
-    # end
   end
 
   def get_round_score(round)
     get_current_game_score[round]
   end
 
-  def score_point(player )# = "bob")
-    #@called_score = true
+  def score_point(player)
+    if @score[-1] == 'deuce' && player == 'player1'
+      @score << ['advantage/-']
+      return @score
+    elsif @score[-1] == 'deuce' && player == 'player2'
+      @score << ['-/advantage']
+      return @score
+    end
 
-    @score << [15,0]
-    @score
-    
+    if player == 'player1'
+      new_score = @score[-1][0] + 15 
+      other_score = @score[-1][1]
+      if new_score == 45
+        new_score = 40
+      elsif new_score == 55
+        winner('player1')
+      end
+      @score << [new_score,other_score]
+    else
+      new_score = @score[-1][1] + 15 
+      other_score = @score[-1][0]
+      if new_score == 45
+        new_score = 40
+      elsif new_score == 55
+        winner('player2')
+      end
+      if new_score == 40 && other_score == 40
+        @score << ['deuce']
+      else 
+        @score << [other_score,new_score]
+      end
+    end
+  end
 
-    # if player == "Bob" && @score.length == 1
-    #   puts "------in if------"
-    #   @score
-    # else
-    #   @score << @score[-1] + [15,0]
-    #   2.times{@score[-1].shift}
-    #   puts "-----#{@score}-------"
-    # end
+  def winner(player)
+    print "#{player} is the winner"
+    @winning_player = player
+  end
 
-    # @count += 1
-    # puts "++++++++++++++#{@count}+++++++++"
-    # @new_score = [[0,0],[15,0]]
+  def winning_player
+    @winning_player
   end
 
 end
